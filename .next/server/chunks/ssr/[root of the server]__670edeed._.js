@@ -985,7 +985,7 @@ function HomeContent() {
     const upcomingEvents = [
         {
             id: 1,
-            title: "Concerto di Musica test Jazz",
+            title: "Concerto di test push",
             date: "15 Aprile 2025",
             time: "20:30",
             location: "Teatro Comunale",
