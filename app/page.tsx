@@ -6,9 +6,19 @@ import { supabase } from "../lib/supabase"  // Assicurati che il path sia corret
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState<string | null>(null) // Per visualizzare errori
+  const [loading, setLoading] = useState(false) // Per lo stato di caricamento
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!email || !password) {
+      setError("Tutti i campi sono obbligatori")
+      return
+    }
+
+    setLoading(true)
+    setError(null) // Resetta l'errore se c'è
 
     // Fai la richiesta di login a Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -16,8 +26,10 @@ export default function LoginPage() {
       password
     })
 
+    setLoading(false)
+
     if (error) {
-      console.error("Errore di login:", error.message)
+      setError("Errore di login: " + error.message)
     } else {
       console.log("Login riuscito:", data)
       // Puoi redirigere l'utente a una pagina successiva o gestire la sessione
@@ -62,12 +74,14 @@ export default function LoginPage() {
               className="w-full px-3 py-2 border rounded-md"
             />
           </div>
+          {error && <div className="text-red-600 text-sm">{error}</div>} {/* Mostra l'errore se presente */}
           <div className="mt-6 space-y-2">
             <button
               type="submit"
               className="block w-full bg-blue-600 text-white text-center py-2 px-4 rounded-md hover:bg-blue-700"
+              disabled={loading} // Disabilita il bottone durante il caricamento
             >
-              Accedi
+              {loading ? "Caricamento..." : "Accedi"} {/* Mostra "Caricamento..." durante il login */}
             </button>
             <div className="text-center text-sm">
               Non hai un account?{" "}
