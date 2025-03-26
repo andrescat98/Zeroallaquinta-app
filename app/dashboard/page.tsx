@@ -148,11 +148,7 @@ function HomeContent() {
   const upcomingEvents = [
     {
       id: 1,
-<<<<<<< HEAD
       title: "Concerto di Musica test Jazz",
-=======
-      title: "Concerto di Musica super Jazz",
->>>>>>> origin/main
       date: "15 Aprile 2025",
       time: "20:30",
       location: "Teatro Comunale",
