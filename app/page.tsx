@@ -1,13 +1,15 @@
 "use client"
 import Link from 'next/link'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { supabase } from "../lib/supabase"  // Assicurati che il path sia corretto
+import { useRouter } from 'next/navigation' // Usa il nuovo hook per l'App Router
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null) // Per visualizzare errori
   const [loading, setLoading] = useState(false) // Per lo stato di caricamento
+  const router = useRouter() // Inizializza useRouter per il redirect
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,7 +34,15 @@ export default function LoginPage() {
       setError("Errore di login: " + error.message)
     } else {
       console.log("Login riuscito:", data)
-      // Puoi redirigere l'utente a una pagina successiva o gestire la sessione
+      
+      // Dopo il login riuscito, verifica la sessione
+      const { data: session, error: sessionError } = await supabase.auth.getSession()
+      if (session) {
+        // Redirige alla dashboard dopo il login riuscito
+        router.push('/dashboard')
+      } else {
+        setError("Impossibile ottenere la sessione.")
+      }
     }
   }
 
