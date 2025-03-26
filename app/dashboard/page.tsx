@@ -148,7 +148,7 @@ function HomeContent() {
   const upcomingEvents = [
     {
       id: 1,
-      title: "Concerto di Musica Classica",
+      title: "Concerto di Musica Jazz",
       date: "15 Aprile 2025",
       time: "20:30",
       location: "Teatro Comunale",
