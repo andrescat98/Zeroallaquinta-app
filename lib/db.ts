@@ -6,6 +6,8 @@ const client = new Client({
 
 client.connect()
   .then(() => console.log('Connesso al database PostgreSQL'))
-  .catch(err => console.error('Errore di connessione al database:', err));
+  .catch((err: Error) => {
+    console.error('Errore di connessione al database:', err);
+  });
 
 export default client;
