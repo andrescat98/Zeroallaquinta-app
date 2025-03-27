@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link'
 import { useState, useEffect } from "react"
-import { createClient } from "@/lib/server"  // Assicurati che il path sia corretto
+import { supabase } from "@/lib/server"  // Assicurati che il path sia corretto
 import { useRouter } from 'next/navigation' // Usa il nuovo hook per l'App Router
 
 export default function LoginPage() {
@@ -22,8 +22,8 @@ export default function LoginPage() {
     setLoading(true)
     setError(null) // Resetta l'errore se c'è
 
-    // Fai la richiesta di login a createClient
-    const { data, error } = await createClient.auth.signInWithPassword({
+    // Fai la richiesta di login a Supabase
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
     })
@@ -36,7 +36,7 @@ export default function LoginPage() {
       console.log("Login riuscito:", data)
       
       // Dopo il login riuscito, verifica la sessione
-      const { data: session, error: sessionError } = await createClient.auth.getSession()
+      const { data: session, error: sessionError } = await supabase.auth.getSession()
       if (session) {
         // Redirige alla dashboard dopo il login riuscito
         router.push('/dashboard')

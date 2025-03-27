@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/server";
+import { supabase } from "@/lib/server";
 import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
@@ -18,7 +18,7 @@ export default function SignupPage() {
     setLoading(true);
 
     // 1️⃣ REGISTRAZIONE CON SUPABASE AUTH
-    const { data: authData, error: authError } = await createClient.auth.signUp({
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -32,7 +32,7 @@ export default function SignupPage() {
     // 2️⃣ INSERISCI UTENTE NELLA TABELLA "users"
     const userId = authData.user?.id;
     if (userId) {
-      const { error: dbError } = await createClient.from("users").insert([
+      const { error: dbError } = await supabase.from("users").insert([
         {
           id: userId, // Stesso ID di Supabase Auth
           name,
