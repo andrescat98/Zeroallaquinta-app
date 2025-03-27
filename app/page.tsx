@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link'
 import { useState, useEffect } from "react"
-import { supabase } from "@/lib/server"  // Assicurati che il path sia corretto
+import { supabase } from "@/lib/client"  // Assicurati che il path sia corretto
 import { useRouter } from 'next/navigation' // Usa il nuovo hook per l'App Router
 
 export default function LoginPage() {

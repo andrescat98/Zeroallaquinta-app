@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/server";
+import { supabase } from "@/lib/client";
 import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
