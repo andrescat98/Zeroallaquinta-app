@@ -1,29 +1,31 @@
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { cookies } from 'next/headers';
 
 export const createClient = (cookieStore: ReturnType<typeof cookies>) => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  // Create Supabase client instance
+  const supabase = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
-  if (!supabaseUrl || !supabaseKey) {
-    throw new Error('Le variabili d\'ambiente di Supabase non sono definite.')
-  }
+  // Override the default cookie handling logic
+  const cookieHandler = {
+    getAll() {
+      return cookieStore.getAll();
+    },
+    setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+      try {
+        cookiesToSet.forEach(({ name, value, options }) => {
+          cookieStore.set(name, value, options);
+        });
+      } catch (error) {
+        // Handle the case where `setAll` is called from a server-side component
+        // This can be ignored if middleware is refreshing user sessions
+        console.error('Error setting cookies:', error);
+      }
+    },
+  };
 
-  // Crea l'istanza del client Supabase
-  const supabase = createSupabaseClient(supabaseUrl, supabaseKey)
-
-  // Gestione dei cookies
-  supabase.auth.setAuth = (token: string) => {
-    try {
-      cookieStore.set('sb-access-token', token, { path: '/' })
-    } catch (error) {
-      console.error('Errore durante la gestione dei cookie:', error)
-    }
-  }
-
-  supabase.auth.getAuth = () => {
-    return cookieStore.get('sb-access-token') || ''
-  }
-
-  return supabase
-}
+  // Return the client with custom cookie handling
+  return { supabase, cookieHandler };
+};
