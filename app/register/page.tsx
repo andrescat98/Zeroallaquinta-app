@@ -17,21 +17,38 @@ export default function SignupPage() {
     setError(null);
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
+    // 1️⃣ REGISTRAZIONE CON SUPABASE AUTH
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { name }, // Salva il nome nel profilo utente
-      },
     });
 
-    setLoading(false);
-
-    if (error) {
-      setError(error.message);
+    if (authError) {
+      setError(authError.message);
+      setLoading(false);
       return;
     }
 
+    // 2️⃣ INSERISCI UTENTE NELLA TABELLA "users"
+    const userId = authData.user?.id;
+    if (userId) {
+      const { error: dbError } = await supabase.from("users").insert([
+        {
+          id: userId, // Stesso ID di Supabase Auth
+          name,
+          email,
+          role: "member",
+        },
+      ]);
+
+      if (dbError) {
+        setError(dbError.message);
+        setLoading(false);
+        return;
+      }
+    }
+
+    setLoading(false);
     alert("Registrazione riuscita! Controlla la tua email per verificare l'account.");
     router.push("/login");
   };
