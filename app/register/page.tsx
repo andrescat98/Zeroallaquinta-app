@@ -41,24 +41,20 @@ export default function SignupPage() {
     // 2️⃣ INSERISCI UTENTE NELLA TABELLA "users"
     const userId = authData.user?.id;
     if (userId) {
-      const { data, error: dbError } = await supabase.from("users").insert([
+      const { error: dbError } = await supabase.from("users").insert([
         {
           id: userId, // Stesso ID di Supabase Auth
           name,
           email,
-          password, // Aggiungi la password (anche se è già presente in Supabase Auth, la aggiungi per eventuali controlli futuri)
           role,
         },
-      ]).select(); // Assicurati di usare .select() per ottenere i dati inseriti
+      ]);
 
       if (dbError) {
         setError(dbError.message);
         setLoading(false);
         return;
       }
-
-      // Se l'inserimento ha successo, i dati dell'utente vengono memorizzati in `data`
-      console.log('Dati inseriti:', data); // Dati che sono stati inseriti nella tabella
     }
 
     setLoading(false);
