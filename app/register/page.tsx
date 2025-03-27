@@ -7,7 +7,9 @@ import { useRouter } from "next/navigation";
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
+  const [role, setRole] = useState("member"); // Imposta "member" come valore di default
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -16,6 +18,13 @@ export default function SignupPage() {
     e.preventDefault();
     setError(null);
     setLoading(true);
+
+    // Verifica che le password corrispondano
+    if (password !== confirmPassword) {
+      setError("Le password non corrispondono.");
+      setLoading(false);
+      return;
+    }
 
     // 1️⃣ REGISTRAZIONE CON SUPABASE AUTH
     const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -37,7 +46,8 @@ export default function SignupPage() {
           id: userId, // Stesso ID di Supabase Auth
           name,
           email,
-          role: "member",
+          password, // Aggiungi la password (anche se è già presente in Supabase Auth, la aggiungi per eventuali controlli futuri)
+          role,
         },
       ]).select(); // Assicurati di usare .select() per ottenere i dati inseriti
 
@@ -84,6 +94,22 @@ export default function SignupPage() {
           className="border p-2 w-full rounded"
           required
         />
+        <input
+          type="password"
+          placeholder="Conferma Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="border p-2 w-full rounded"
+          required
+        />
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className="border p-2 w-full rounded"
+        >
+          <option value="member">Member</option>
+          <option value="direttivo">Direttivo</option>
+        </select>
         {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
