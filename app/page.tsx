@@ -22,8 +22,8 @@ export default function LoginPage() {
     setLoading(true)
     setError(null) // Resetta l'errore se c'è
 
-    // Fai la richiesta di login a Supabase
-    const { data, error } = await supabase.auth.signInWithPassword({
+    // Fai la richiesta di login a createClient
+    const { data, error } = await createClient.auth.signInWithPassword({
       email,
       password
     })
@@ -36,7 +36,7 @@ export default function LoginPage() {
       console.log("Login riuscito:", data)
       
       // Dopo il login riuscito, verifica la sessione
-      const { data: session, error: sessionError } = await supabase.auth.getSession()
+      const { data: session, error: sessionError } = await createClient.auth.getSession()
       if (session) {
         // Redirige alla dashboard dopo il login riuscito
         router.push('/dashboard')
