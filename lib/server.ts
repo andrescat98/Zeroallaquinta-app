@@ -26,6 +26,9 @@ export const createClient = (cookieStore: ReturnType<typeof cookies>) => {
     },
   };
 
-  // Return the client with custom cookie handling
+  // Return the client and cookieHandler so they can be used elsewhere
   return { supabase, cookieHandler };
 };
+
+// Explicitly export the supabase client if needed in other places
+export const { supabase, cookieHandler } = createClient(cookies());

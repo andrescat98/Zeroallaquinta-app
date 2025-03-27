@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/server";
+import { supabase, cookieHandler } from '@/lib/server'; // Ensure the path is correct
 import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
